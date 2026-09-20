@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="as">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Assamese Typing | অসমীয়া টাইপিং</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;600&family=Noto+Serif+Bengali:wght@500;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #f2f6f1;
+    --panel: #ffffff;
+    --ink: #17301f;
+    --muted: #5b6f61;
+    --line: #d3dfd3;
+    --tea: #1c4a35;
+    --tea-soft: #e3efe6;
+    --red: #c1272d;
+    --gold: #b98a1c;
+    --focus: #1c6fd1;
+    --as-font: "Noto Sans Bengali", "Nirmala UI", "Lohit Assamese", "Vrinda", sans-serif;
+    --serif-as: "Noto Serif Bengali", "Nirmala UI", serif;
+    --display: "Fraunces", Georgia, serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0f1a14;
+      --panel: #16241c;
+      --ink: #e6efe7;
+      --muted: #94aa9b;
+      --line: #2a3d31;
+      --tea: #8fd1a9;
+      --tea-soft: #1d3327;
+      --red: #ef5a5f;
+      --gold: #e0b44a;
+      --focus: #6db2ff;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* woven gamosa-style border */
+  .weave {
+    height: 17px;
+    background:
+      linear-gradient(var(--red), var(--red)) 0 0 / 100% 3px no-repeat,
+      linear-gradient(135deg, var(--red) 25%, transparent 25%) -7px 3px,
+      linear-gradient(225deg, var(--red) 25%, transparent 25%) -7px 3px,
+      linear-gradient(315deg, var(--red) 25%, transparent 25%) 0 3px,
+      linear-gradient(45deg,  var(--red) 25%, transparent 25%) 0 3px;
+    background-size: 100% 3px, 14px 14px, 14px 14px, 14px 14px, 14px 14px;
+    background-repeat: no-repeat, repeat-x, repeat-x, repeat-x, repeat-x;
+  }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  header { padding: 36px 0 22px; }
+  h1 {
+    margin: 0;
+    font-family: var(--serif-as);
+    font-weight: 700;
+    font-size: clamp(2.2rem, 6vw, 3.6rem);
+    line-height: 1.2;
+    color: var(--tea);
+  }
+  .sub {
+    margin: 6px 0 0;
+    font-family: var(--display);
+    font-size: 1.15rem;
+    color: var(--muted);
+  }
+
+  /* writing desk */
+  .desk {
+    display: grid;
+    grid-template-columns: 1fr 1.25fr;
+    gap: 18px;
+    margin-top: 8px;
+  }
+  @media (max-width: 800px) { .desk { grid-template-columns: 1fr; } }
+
+  .pane {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px;
+  }
+  .pane.out { border-top: 3px solid var(--red); }
+  .pane-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 600;
+    font-size: .95rem;
+  }
+  .pane-head span.hint { font-weight: 400; color: var(--muted); font-size: .85rem; }
+
+  textarea {
+    flex: 1;
+    width: 100%;
+    border: 0;
+    resize: vertical;
+    background: transparent;
+    color: var(--ink);
+    padding: 14px;
+    min-height: 240px;
+    outline: none;
+  }
+  #src { font: 1.05rem/1.7 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  #dst { font: 1.55rem/1.9 var(--as-font); }
+
+  .bar {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    padding: 10px 14px;
+    border-top: 1px solid var(--line);
+  }
+  button {
+    font: inherit; font-size: .92rem; font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--tea);
+    background: transparent; color: var(--tea);
+    cursor: pointer;
+  }
+  button:hover { background: var(--tea-soft); }
+  button.primary { background: var(--tea); color: var(--panel); }
+  button.primary:hover { filter: brightness(1.12); background: var(--tea); }
+  button:focus-visible, textarea:focus-visible, input:focus-visible {
+    outline: 3px solid var(--focus); outline-offset: 2px;
+  }
+  .spacer { flex: 1; }
+  .count { color: var(--muted); font-size: .85rem; }
+
+  .opts { display: flex; gap: 18px; flex-wrap: wrap; padding: 12px 2px 0; color: var(--muted); font-size: .92rem; }
+  .opts label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+  /* key chart */
+  section.chart { margin-top: 34px; }
+  h2 {
+    font-family: var(--display);
+    font-size: 1.5rem; margin: 0 0 4px; color: var(--tea);
+  }
+  .lead { margin: 0 0 16px; color: var(--muted); max-width: 62ch; }
+  .group { margin-bottom: 22px; }
+  .group h3 { margin: 0 0 8px; font-size: 1rem; }
+  .keys { display: flex; flex-wrap: wrap; gap: 6px; }
+  .key {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 58px; padding: 6px 8px 5px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-bottom: 3px solid var(--line);
+    border-radius: 5px;
+    color: var(--ink);
+    font-weight: 400;
+  }
+  .key:hover { border-color: var(--tea); border-bottom-color: var(--red); background: var(--panel); }
+  .key b { font: 600 1.45rem/1.3 var(--as-font); }
+  .key small { font: .78rem ui-monospace, Menlo, Consolas, monospace; color: var(--muted); }
+
+  .tips {
+    background: var(--tea-soft);
+    border-left: 4px solid var(--gold);
+    padding: 14px 18px;
+    border-radius: 4px;
+    max-width: 78ch;
+  }
+  .tips ul { margin: 6px 0 0; padding-left: 20px; }
+  .tips li { margin: 4px 0; }
+  code {
+    font: .9em ui-monospace, Menlo, Consolas, monospace;
+    background: var(--panel); padding: 1px 6px; border-radius: 3px; border: 1px solid var(--line);
+  }
+  .as { font-family: var(--as-font); }
+
+  footer { padding: 30px 0 50px; color: var(--muted); font-size: .88rem; }
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--tea); color: var(--panel);
+    padding: 8px 18px; border-radius: 4px; font-weight: 600;
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+</style>
+</head>
+
+<body>
+<div class="weave" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header>
+    <h1>অসমীয়া টাইপিং</h1>
+    <p class="sub">Type in English letters, get Assamese Unicode.</p>
+  </header>
+
+  <main>
+    <div class="desk">
+      <div class="pane">
+        <div class="pane-head">Type here <span class="hint">English letters</span></div>
+        <textarea id="src" spellcheck="false" autocomplete="off" autocapitalize="off"
+                  placeholder="Try: oxomiya bhaSha"></textarea>
+      </div>
+
+      <div class="pane out">
+        <div class="pane-head">অসমীয়া <span class="hint">Copy this text anywhere</span></div>
+        <textarea id="dst" readonly aria-live="polite" lang="as"></textarea>
+        <div class="bar">
+          <button class="primary" id="copy">Copy</button>
+          <button id="download">Download .txt</button>
+          <button id="clear">Clear</button>
+          <span class="spacer"></span>
+          <span class="count" id="count"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="opts">
+      <label><input type="checkbox" id="optDigits" checked> Use Assamese digits (০১২)</label>
+      <label><input type="checkbox" id="optDanda" checked> Full stop becomes danda (।)</label>
+    </div>
+
+    <section class="chart">
+      <h2>Key chart</h2>
+      <p class="lead">Click any key to add it to your text. Consonants take the vowel you type after them: <code>k</code> + <code>a</code> gives <span class="as">কা</span>.</p>
+      <div id="chart"></div>
+
+      <div class="tips">
+        <strong>Good to know</strong>
+        <ul>
+          <li>The letter <code>o</code> is the built-in vowel: <code>kol</code> gives <span class="as">কল</span>.</li>
+          <li>Two consonants in a row join into a conjunct: <code>kSha</code> gives <span class="as">ক্ষা</span>, <code>stri</code> gives <span class="as">স্ত্ৰি</span>.</li>
+          <li>Capital letters matter: <code>T Th D Dh N R S O U I H</code> are different sounds from their small versions.</li>
+          <li>Put <code>_</code> between letters to stop them combining: <code>n_g</code> gives <span class="as">নগ</span>, not <span class="as">ং</span>.</li>
+          <li>Wrap English words in curly braces to keep them as they are: <code>{Google} khuji</code>.</li>
+          <li><code>x</code> also works for <span class="as">স</span>, and <code>ch</code> for <span class="as">চ</span>.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>Works offline. Nothing you type leaves this page.</footer>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------------------------------------------------------------
+   1. Transliteration tables
+----------------------------------------------------------------*/
+const HAL = "\u09CD";                       // ্ (hasanta / virama)
+const DIGITS = "০১২৩৪৫৬৭৮৯";
+const STRICT_CAPS = "TDNRSOUIH";            // capitals with their own meaning
+
+// consonants (a halant is added automatically)
+const CONS = {
+  k:"ক", kh:"খ", g:"গ", gh:"ঘ", Ng:"ঙ",
+  c:"চ", ch:"চ", chh:"ছ", j:"জ", jh:"ঝ", ny:"ঞ",
+  T:"ট", Th:"ঠ", D:"ড", Dh:"ঢ", N:"ণ",
+  t:"ত", th:"থ", d:"দ", dh:"ধ", n:"ন",
+  p:"প", ph:"ফ", f:"ফ", b:"ব", bh:"ভ", v:"ভ", m:"ম",
+  z:"য", y:"য়", r:"ৰ", l:"ল", w:"ৱ",
+  S:"শ", sh:"শ", Sh:"ষ", s:"স", x:"স", h:"হ",
+  R:"ড়", Rh:"ঢ়",
+  ksh:"ক্ষ", gy:"জ্ঞ"
+};
+
+// vowels: [independent letter, matra (vowel sign)]
+const VOW = {
+  o:["অ",""],  a:["আ","া"],  i:["ই","ি"],  I:["ঈ","ী"],
+  u:["উ","ু"], U:["ঊ","ূ"], e:["এ","ে"],  oi:["ঐ","ৈ"],
+  O:["ও","ো"], ou:["ঔ","ৌ"], rri:["ঋ","ৃ"]
+};
+
+// signs that attach to the previous letter
+const SIGNS = { ng:"ং", H:"ঃ", "^":"ঁ", "t``":"ৎ" };
+
+// one lookup table
+const TABLE = {};
+for (const k in CONS) TABLE[k] = { t:"c", v:CONS[k] };
+for (const k in VOW)  TABLE[k] = { t:"v", full:VOW[k][0], matra:VOW[k][1] };
+for (const k in SIGNS) TABLE[k] = { t:"s", v:SIGNS[k] };
+
+/* ---------------------------------------------------------------
+   2. Converter
+----------------------------------------------------------------*/
+function convert(text, opts) {
+  let out = "";
+  let i = 0;
+  const stripHal = () => { if (out.endsWith(HAL)) out = out.slice(0, -1); };
+  const isDigit = c => c !== undefined && c >= "0" && c <= "9";
+
+  while (i < text.length) {
+    const ch = text[i];
+
+    // {literal English text}
+    if (ch === "{") {
+      const end = text.indexOf("}", i + 1);
+      if (end !== -1) { stripHal(); out += text.slice(i + 1, end); i = end + 1; continue; }
+    }
+
+    // _ = break, stops letters from joining
+    if (ch === "_") { stripHal(); i++; continue; }
+
+    let matched = false;
+    for (const n of [3, 2, 1]) {                    // longest match first
+      const raw = text.substr(i, n);
+      if (raw.length < n) continue;
+
+      let hit = TABLE[raw];
+      if (!hit && /^[A-Z]/.test(raw) && !STRICT_CAPS.includes(raw[0])) {
+        hit = TABLE[raw.toLowerCase()];             // "Kh" is treated like "kh"
+      }
+      if (!hit) continue;
+
+      if (hit.t === "c") {
+        out += hit.v + HAL;
+      } else if (hit.t === "s") {
+        stripHal();
+        out += hit.v;
+      } else {                                      // vowel
+        if (out.endsWith(HAL)) out = out.slice(0, -1) + hit.matra;
+        else out += hit.full;
+      }
+      i += n;
+      matched = true;
+      break;
+    }
+
+    if (!matched) {                                 // space, punctuation, digits...
+      stripHal();
+      let c = ch;
+      if (opts.digits && isDigit(c)) {
+        c = DIGITS[+c];
+      } else if (opts.danda && c === "." && !(isDigit(text[i - 1]) && isDigit(text[i + 1]))) {
+        c = "।";
+      }
+      out += c;
+      i++;
+    }
+  }
+  stripHal();
+  return out;
+}
+
+/* ---------------------------------------------------------------
+   3. Page wiring
+----------------------------------------------------------------*/
+const $ = id => document.getElementById(id);
+const src = $("src"), dst = $("dst");
+
+function render() {
+  dst.value = convert(src.value, {
+    digits: $("optDigits").checked,
+    danda:  $("optDanda").checked
+  });
+  const words = dst.value.trim() ? dst.value.trim().split(/\s+/).length : 0;
+  $("count").textContent = words + (words === 1 ? " word" : " words");
+  try {
+    localStorage.setItem("asm-src", src.value);
+    localStorage.setItem("asm-digits", $("optDigits").checked ? "1" : "0");
+    localStorage.setItem("asm-danda",  $("optDanda").checked ? "1" : "0");
+  } catch (e) { /* storage may be unavailable */ }
+}
+
+function toast(msg) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast.id);
+  toast.id = setTimeout(() => t.classList.remove("show"), 1400);
+}
+
+$("copy").onclick = async () => {
+  if (!dst.value) return toast("Nothing to copy yet");
+  try {
+    await navigator.clipboard.writeText(dst.value);
+  } catch (e) {
+    dst.select();
+    document.execCommand("copy");
+    dst.setSelectionRange(0, 0);
+  }
+  toast("Copied");
+};
+
+$("download").onclick = () => {
+  if (!dst.value) return toast("Nothing to download yet");
+  const blob = new Blob([dst.value], { type: "text/plain;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "assamese-text.txt";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(a.href);
+  toast("Downloaded");
+};
+
+$("clear").onclick = () => { src.value = ""; render(); src.focus(); };
+
+src.addEventListener("input", render);
+$("optDigits").addEventListener("change", render);
+$("optDanda").addEventListener("change", render);
+
+/* ---------------------------------------------------------------
+   4. Key chart (click to insert)
+----------------------------------------------------------------*/
+const CHART = [
+  ["Vowels", [["অ","o"],["আ","a"],["ই","i"],["ঈ","I"],["উ","u"],["ঊ","U"],["ঋ","rri"],["এ","e"],["ঐ","oi"],["ও","O"],["ঔ","ou"]]],
+  ["Consonants", [
+    ["ক","k"],["খ","kh"],["গ","g"],["ঘ","gh"],["ঙ","Ng"],
+    ["চ","ch"],["ছ","chh"],["জ","j"],["ঝ","jh"],["ঞ","ny"],
+    ["ট","T"],["ঠ","Th"],["ড","D"],["ঢ","Dh"],["ণ","N"],
+    ["ত","t"],["থ","th"],["দ","d"],["ধ","dh"],["ন","n"],
+    ["প","p"],["ফ","ph"],["ব","b"],["ভ","bh"],["ম","m"],
+    ["য","z"],["ৰ","r"],["ল","l"],["ৱ","w"],
+    ["শ","S"],["ষ","Sh"],["স","s"],["হ","h"],
+    ["ড়","R"],["ঢ়","Rh"],["য়","y"],["ক্ষ","ksh"],["জ্ঞ","gy"]
+  ]],
+  ["Signs", [["ং","ng"],["ঃ","H"],["ঁ","^"],["ৎ","t``"],["।","."]]],
+  ["Digits", [["০","0"],["১","1"],["২","2"],["৩","3"],["৪","4"],["৫","5"],["৬","6"],["৭","7"],["৮","8"],["৯","9"]]]
+];
+
+const chart = $("chart");
+CHART.forEach(([title, keys]) => {
+  const g = document.createElement("div");
+  g.className = "group";
+  g.innerHTML = "<h3>" + title + "</h3>";
+  const row = document.createElement("div");
+  row.className = "keys";
+  keys.forEach(([glyph, key]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "key";
+    b.title = "Type " + key;
+    b.innerHTML = "<b></b><small></small>";
+    b.firstChild.textContent = glyph;
+    b.lastChild.textContent = key;
+    b.onclick = () => {
+      const s = src.selectionStart, e = src.selectionEnd;
+      src.setRangeText(key, s, e, "end");
+      src.focus();
+      render();
+    };
+    row.appendChild(b);
+  });
+  g.appendChild(row);
+  chart.appendChild(g);
+});
+
+/* ---------------------------------------------------------------
+   5. Restore last session
+----------------------------------------------------------------*/
+try {
+  src.value = localStorage.getItem("asm-src") || "";
+  if (localStorage.getItem("asm-digits") === "0") $("optDigits").checked = false;
+  if (localStorage.getItem("asm-danda")  === "0") $("optDanda").checked  = false;
+} catch (e) {}
+render();
+src.focus();
+</script>
+</body>
+</html>
